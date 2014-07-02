@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--basedir是从build.xml所在的目录为基础算起的-->
+<project name="spring-mvc" default="webwar" basedir="../">
+
+	<!--定义常用目录属性-->
+	<property name="encoding" value="UTF-8" />
+	<property name="deploy.name" value="spring-mvc" />
+	<property name="src.dir" value="${basedir}/src/main" />
+	<property name="web-inf.dir" value="${basedir}/WebContent/WEB-INF" />	
+	<property name="target.dir" value="${basedir}/Dist/${deploy.name}" />
+	<property name="output.web-inf.dir" value="${target.dir}/WEB-INF" />
+	<property name="classes.dir" value="${output.web-inf.dir}/classes" />	
+
+	<!--编译时的classpath-->
+	<path id="classpath">
+		<fileset dir="${web-inf.dir}/lib">
+			<include name="**/*.*" />
+		</fileset>
+	</path>
+
+	<!--初始化，创建主要输出目录-->
+	<target name="init">
+		<mkdir dir="${target.dir}" />
+		<mkdir dir="${classes.dir}" />	
+	</target>
+
+	<!--清空输出内容-->
+	<target name="clean">
+		<delete includeEmptyDirs="true" dir="${target.dir}" />		
+	</target>
+
+	<!-- 编译 -->
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" debug="true" encoding="${encoding}" includeantruntime="false">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<!--复制相应的文件-->
+	<target name="copy">
+		<!--将所有webcontent/web-inf的内容，复制到web-inf下-->
+		<copy todir="${output.web-inf.dir}" overwrite="yes">
+			<fileset dir="${web-inf.dir}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>		
+	</target>
+
+	<!--生成war包-->
+	<target name="webwar" depends="compile,copy">
+		<war webxml="${output.web-inf.dir}/web.xml" destfile="${target.dir}/../${deploy.name}.war">
+			<fileset dir="${target.dir}/">
+				<include name="**/*.*" />
+			</fileset>
+		</war>
+	</target>
+</project>

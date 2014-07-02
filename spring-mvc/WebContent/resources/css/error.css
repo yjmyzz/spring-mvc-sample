@@ -1,0 +1,11 @@
+body.error{padding:0;margin:0px;background-color:#efefef}
+
+div.error {	
+	font-size: 14px;
+	padding:10px
+}
+
+h1.error {
+	color: black
+}
+p.error{line-height:150%;color:black}
